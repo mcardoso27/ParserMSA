@@ -1,6 +1,8 @@
 package com.websystique.springmvc.controller;
 
 import com.websystique.springmvc.model.Employee;
+import com.websystique.springmvc.model.Data;
+import com.websystique.springmvc.service.DataService;
 import com.websystique.springmvc.service.EmployeeService;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -54,6 +56,10 @@ public class HelloWorldController {
         return "welcome";
     }
 
+    
+    @Autowired
+    DataService dataService;
+    
     @RequestMapping(value = "/put", method = RequestMethod.PUT)
     public String sayHelloAgainPut(HttpServletRequest request, ModelMap model) {
 
@@ -126,7 +132,20 @@ public class HelloWorldController {
             System.out.println("ANALISIS PARTE B: " + this.analizerPartB(parts[1]));
 
             System.out.println("ANALISIS PARTE H: " + this.analizerPartH(parts[7]));
-
+            
+            System.out.println("AHORA VA A GUARDAR EL EVENTO");
+            Data evento = new Data();
+            evento.setId(1);
+            evento.setPartA(parts[0]);
+            evento.setPartZ(parts[11]);
+            
+            System.out.println("EL ID EN EL EVENTO VALE: " + evento.getId());
+            System.out.println("LA PARTE A EN EL EVENTO VALE: " + evento.getPartA());
+            System.out.println("LA PARTE Z EN EL EVENTO VALE: " + evento.getPartZ());
+            dataService.saveData(evento);
+            
+            System.out.println("TERMINO DE GUARDAR EL EVENTO");
+            
             writer.close();
 
         } catch (IOException e) {
@@ -200,7 +219,7 @@ public class HelloWorldController {
                 int beginFile = info[i].indexOf("[file ");
                 if (beginFile > -1) {
                     fileAux = info[i].substring(beginFile);
-                    file.add(fileAux.substring(7,fileAux.indexOf("]") - 1));
+                    file.add(fileAux.substring(7, fileAux.indexOf("]") - 1));
                 } else {
                     file.add("");
                 }
@@ -208,15 +227,15 @@ public class HelloWorldController {
                 int beginId = info[i].indexOf("[id ");
                 if (beginId > -1) {
                     idAux = info[i].substring(beginId);
-                    id.add(idAux.substring(5,idAux.indexOf("]") - 1));
+                    id.add(idAux.substring(5, idAux.indexOf("]") - 1));
                 } else {
                     id.add("");
                 }
-                
+
                 int beginMsg = info[i].indexOf("[msg ");
                 if (beginMsg > -1) {
                     msgAux = info[i].substring(beginMsg);
-                    msg.add(msgAux.substring(6,msgAux.indexOf("]") - 1));
+                    msg.add(msgAux.substring(6, msgAux.indexOf("]") - 1));
                 } else {
                     msg.add("");
                 }
@@ -224,7 +243,7 @@ public class HelloWorldController {
                 int beginSeverity = info[i].indexOf("[severity ");
                 if (beginSeverity > -1) {
                     severityAux = info[i].substring(beginSeverity);
-                    severity.add(severityAux.substring(11,severityAux.indexOf("]") - 1));
+                    severity.add(severityAux.substring(11, severityAux.indexOf("]") - 1));
                 } else {
                     severity.add("");
                 }
@@ -240,114 +259,109 @@ public class HelloWorldController {
     }
 
     //HIBERNATEEEEE
-    
     @Autowired
-	EmployeeService service;
-	
-	@Autowired
-	MessageSource messageSource;
+    EmployeeService service;
 
-	/*
+    @Autowired
+    MessageSource messageSource;
+
+    /*
 	 * This method will list all existing employees.
-	 */
-	@RequestMapping(value = { "/", "/list" }, method = RequestMethod.GET)
-	public String listEmployees(ModelMap model) {
+     */
+    @RequestMapping(value = {"/", "/list"}, method = RequestMethod.GET)
+    public String listEmployees(ModelMap model) {
 
-		List<Employee> employees = service.findAllEmployees();
-		model.addAttribute("employees", employees);
-		return "allemployees";
-	}
+        List<Employee> employees = service.findAllEmployees();
+        model.addAttribute("employees", employees);
+        return "allemployees";
+    }
 
-	/*
+    /*
 	 * This method will provide the medium to add a new employee.
-	 */
-	@RequestMapping(value = { "/new" }, method = RequestMethod.GET)
-	public String newEmployee(ModelMap model) {
-		Employee employee = new Employee();
-		model.addAttribute("employee", employee);
-		model.addAttribute("edit", false);
-		return "registration";
-	}
+     */
+    @RequestMapping(value = {"/new"}, method = RequestMethod.GET)
+    public String newEmployee(ModelMap model) {
+        Employee employee = new Employee();
+        model.addAttribute("employee", employee);
+        model.addAttribute("edit", false);
+        return "registration";
+    }
 
-	/*
+    /*
 	 * This method will be called on form submission, handling POST request for
 	 * saving employee in database. It also validates the user input
-	 */
-	@RequestMapping(value = { "/new" }, method = RequestMethod.POST)
-	public String saveEmployee(@Valid Employee employee, BindingResult result,
-			ModelMap model) {
+     */
+    @RequestMapping(value = {"/new"}, method = RequestMethod.POST)
+    public String saveEmployee(@Valid Employee employee, BindingResult result,
+            ModelMap model) {
 
-		if (result.hasErrors()) {
-			return "registration";
-		}
+        if (result.hasErrors()) {
+            return "registration";
+        }
 
-		/*
+        /*
 		 * Preferred way to achieve uniqueness of field [ssn] should be implementing custom @Unique annotation 
 		 * and applying it on field [ssn] of Model class [Employee].
 		 * 
 		 * Below mentioned peace of code [if block] is to demonstrate that you can fill custom errors outside the validation
 		 * framework as well while still using internationalized messages.
 		 * 
-		 */
-		if(!service.isEmployeeSsnUnique(employee.getId(), employee.getSsn())){
-			FieldError ssnError =new FieldError("employee","ssn",messageSource.getMessage("non.unique.ssn", new String[]{employee.getSsn()}, Locale.getDefault()));
-		    result.addError(ssnError);
-			return "registration";
-		}
-		
-		service.saveEmployee(employee);
+         */
+        if (!service.isEmployeeSsnUnique(employee.getId(), employee.getSsn())) {
+            FieldError ssnError = new FieldError("employee", "ssn", messageSource.getMessage("non.unique.ssn", new String[]{employee.getSsn()}, Locale.getDefault()));
+            result.addError(ssnError);
+            return "registration";
+        }
 
-		model.addAttribute("success", "Employee " + employee.getName() + " registered successfully");
-		return "success";
-	}
+        service.saveEmployee(employee);
+
+        model.addAttribute("success", "Employee " + employee.getName() + " registered successfully");
+        return "success";
+    }
 
 
-	/*
+    /*
 	 * This method will provide the medium to update an existing employee.
-	 */
-	@RequestMapping(value = { "/edit-{ssn}-employee" }, method = RequestMethod.GET)
-	public String editEmployee(@PathVariable String ssn, ModelMap model) {
-		Employee employee = service.findEmployeeBySsn(ssn);
-		model.addAttribute("employee", employee);
-		model.addAttribute("edit", true);
-		return "registration";
-	}
-	
-	/*
+     */
+    @RequestMapping(value = {"/edit-{ssn}-employee"}, method = RequestMethod.GET)
+    public String editEmployee(@PathVariable String ssn, ModelMap model) {
+        Employee employee = service.findEmployeeBySsn(ssn);
+        model.addAttribute("employee", employee);
+        model.addAttribute("edit", true);
+        return "registration";
+    }
+
+    /*
 	 * This method will be called on form submission, handling POST request for
 	 * updating employee in database. It also validates the user input
-	 */
-	@RequestMapping(value = { "/edit-{ssn}-employee" }, method = RequestMethod.POST)
-	public String updateEmployee(@Valid Employee employee, BindingResult result,
-			ModelMap model, @PathVariable String ssn) {
+     */
+    @RequestMapping(value = {"/edit-{ssn}-employee"}, method = RequestMethod.POST)
+    public String updateEmployee(@Valid Employee employee, BindingResult result,
+            ModelMap model, @PathVariable String ssn) {
 
-		if (result.hasErrors()) {
-			return "registration";
-		}
+        if (result.hasErrors()) {
+            return "registration";
+        }
 
-		if(!service.isEmployeeSsnUnique(employee.getId(), employee.getSsn())){
-			FieldError ssnError =new FieldError("employee","ssn",messageSource.getMessage("non.unique.ssn", new String[]{employee.getSsn()}, Locale.getDefault()));
-		    result.addError(ssnError);
-			return "registration";
-		}
+        if (!service.isEmployeeSsnUnique(employee.getId(), employee.getSsn())) {
+            FieldError ssnError = new FieldError("employee", "ssn", messageSource.getMessage("non.unique.ssn", new String[]{employee.getSsn()}, Locale.getDefault()));
+            result.addError(ssnError);
+            return "registration";
+        }
 
-		service.updateEmployee(employee);
+        service.updateEmployee(employee);
 
-		model.addAttribute("success", "Employee " + employee.getName()	+ " updated successfully");
-		return "success";
-	}
+        model.addAttribute("success", "Employee " + employee.getName() + " updated successfully");
+        return "success";
+    }
 
-	
-	/*
+    /*
 	 * This method will delete an employee by it's SSN value.
-	 */
-	@RequestMapping(value = { "/delete-{ssn}-employee" }, method = RequestMethod.GET)
-	public String deleteEmployee(@PathVariable String ssn) {
-		service.deleteEmployeeBySsn(ssn);
-		return "redirect:/list";
-	}
-    
-    
-    
-    
+     */
+    @RequestMapping(value = {"/delete-{ssn}-employee"}, method = RequestMethod.GET)
+    public String deleteEmployee(@PathVariable String ssn) {
+        service.deleteEmployeeBySsn(ssn);
+        return "redirect:/list";
+    }
+
 }
