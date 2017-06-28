@@ -1,8 +1,8 @@
 package com.websystique.springmvc.controller;
 
 import com.websystique.springmvc.model.Employee;
-import com.websystique.springmvc.model.Data;
-import com.websystique.springmvc.service.DataService;
+import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.service.EventService;
 import com.websystique.springmvc.service.EmployeeService;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -58,7 +58,7 @@ public class HelloWorldController {
 
     
     @Autowired
-    DataService dataService;
+    EventService EventService;
     
     @RequestMapping(value = "/put", method = RequestMethod.PUT)
     public String sayHelloAgainPut(HttpServletRequest request, ModelMap model) {
@@ -67,7 +67,7 @@ public class HelloWorldController {
 
         try {
 
-            PrintWriter writer = new PrintWriter("/home/martin/Desktop/salidaJava.txt", "UTF-8");
+            PrintWriter writer = new PrintWriter("/home/usuario/Escritorio/salidaJava.txt", "UTF-8");
 
             //Tomo las cabeceras
             writer.println("Nombre y valores de los headers\n");
@@ -134,15 +134,22 @@ public class HelloWorldController {
             System.out.println("ANALISIS PARTE H: " + this.analizerPartH(parts[7]));
             
             System.out.println("AHORA VA A GUARDAR EL EVENTO");
-            Data evento = new Data();
+            Events evento = new Events();
             
             evento.setPartA(parts[0]);
             evento.setPartZ(parts[11]);
+            evento.setDateEvent("FECHA INGRESADA");
+            evento.setClientIp("CLIENT IP");
+            evento.setClientPort("CLIENT PORT");
+            evento.setTransactionId("123456789");
+            evento.setServerIp("SERVER IP");
+            evento.setServerPort("SERVER PORT");
+            
             
             System.out.println("EL ID EN EL EVENTO VALE: " + evento.getId());
             System.out.println("LA PARTE A EN EL EVENTO VALE: " + evento.getPartA());
             System.out.println("LA PARTE Z EN EL EVENTO VALE: " + evento.getPartZ());
-            dataService.saveData(evento);
+            EventService.saveEvent(evento);
             
             System.out.println("TERMINO DE GUARDAR EL EVENTO");
             
