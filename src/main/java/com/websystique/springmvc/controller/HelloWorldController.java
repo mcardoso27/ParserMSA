@@ -67,7 +67,7 @@ public class HelloWorldController {
 
         try {
 
-            PrintWriter writer = new PrintWriter("/home/usuario/Escritorio/salidaJava.txt", "UTF-8");
+            PrintWriter writer = new PrintWriter("/home/martin/Desktop/salidaJava.txt", "UTF-8");
 
             //Tomo las cabeceras
             writer.println("Nombre y valores de los headers\n");
@@ -135,7 +135,7 @@ public class HelloWorldController {
             
             System.out.println("AHORA VA A GUARDAR EL EVENTO");
             Data evento = new Data();
-            evento.setId(1);
+            
             evento.setPartA(parts[0]);
             evento.setPartZ(parts[11]);
             
