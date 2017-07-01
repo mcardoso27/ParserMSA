@@ -157,14 +157,10 @@ public class HelloWorldController {
             event.setMethod(MapPartB.get("protocol"));
             
             EventService.saveEvent(event);
-            
-            
-            
+                       
 //            System.out.println("EL ID EN EL EVENTO VALE: " + evento.getId());
 //            System.out.println("LA PARTE A EN EL EVENTO VALE: " + evento.getPartA());
 //            System.out.println("LA PARTE Z EN EL EVENTO VALE: " + evento.getPartZ());
-            
-            
             
             System.out.println("TERMINO DE GUARDAR EL EVENTO");
             
@@ -229,7 +225,7 @@ public class HelloWorldController {
                 id = new ArrayList<String>(),
                 msg = new ArrayList<String>(),
                 severity = new ArrayList<String>();
-        String fileAux,
+                String fileAux,
                 idAux,
                 msgAux,
                 severityAux;
