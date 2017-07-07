@@ -13,6 +13,8 @@ public interface AuditLogService {
     
     void saveAuditLog (Events event, EventsRules eventRule, Rules rule, Files file);
     
+    public void saveEvent(Events event);
+    
     boolean isRuleRegistred(String idRule);
     
     boolean isFileRegistred(String FileName);

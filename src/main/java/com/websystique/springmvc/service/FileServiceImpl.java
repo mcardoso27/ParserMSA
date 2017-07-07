@@ -4,19 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
  
-import com.websystique.springmvc.dao.EventDao;
-import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.dao.FileDao;
+import com.websystique.springmvc.model.Files;
  
-@Service("eventService")
+@Service("fileService")
 @Transactional
-public class EventServiceImpl implements EventService {
+public class FileServiceImpl implements FileService {
  
     @Autowired
-    private EventDao dao;
+    private FileDao dao;
  
     @Override
-    public void saveEvent(Events event) {
-        dao.saveEvent(event);
+    public void saveFile(Files file) {
+        dao.saveFile(file);
     }
      
 }

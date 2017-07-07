@@ -27,17 +27,17 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author usuario
+ * @author martin
  */
 @Entity
 @Table(name = "Rules")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Rules.findAll", query = "SELECT r FROM Rules r"),
-    @NamedQuery(name = "Rules.findById", query = "SELECT r FROM Rules r WHERE r.id = :id"),
-    @NamedQuery(name = "Rules.findByIdEventsRules", query = "SELECT r FROM Rules r WHERE r.idEventsRules = :idEventsRules"),
-    @NamedQuery(name = "Rules.findByMessage", query = "SELECT r FROM Rules r WHERE r.message = :message"),
-    @NamedQuery(name = "Rules.findBySeverity", query = "SELECT r FROM Rules r WHERE r.severity = :severity")})
+    @NamedQuery(name = "Rules.findAll", query = "SELECT r FROM Rules r")
+    , @NamedQuery(name = "Rules.findById", query = "SELECT r FROM Rules r WHERE r.id = :id")
+    , @NamedQuery(name = "Rules.findByRuleId", query = "SELECT r FROM Rules r WHERE r.ruleId = :ruleId")
+    , @NamedQuery(name = "Rules.findByMessage", query = "SELECT r FROM Rules r WHERE r.message = :message")
+    , @NamedQuery(name = "Rules.findBySeverity", query = "SELECT r FROM Rules r WHERE r.severity = :severity")})
 public class Rules implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,8 +48,9 @@ public class Rules implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "idEventsRules")
-    private int idEventsRules;
+    @Size(min = 1, max = 6)
+    @Column(name = "RuleId")
+    private String ruleId;
     @Size(max = 255)
     @Column(name = "message")
     private String message;
@@ -59,7 +60,7 @@ public class Rules implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rulesId")
     private List<EventsRules> eventsRulesList;
     @JoinColumn(name = "idFile", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Files idFile;
 
     public Rules() {
@@ -69,9 +70,9 @@ public class Rules implements Serializable {
         this.id = id;
     }
 
-    public Rules(Integer id, int idEventsRules) {
+    public Rules(Integer id, String ruleId) {
         this.id = id;
-        this.idEventsRules = idEventsRules;
+        this.ruleId = ruleId;
     }
 
     public Integer getId() {
@@ -82,12 +83,12 @@ public class Rules implements Serializable {
         this.id = id;
     }
 
-    public int getIdEventsRules() {
-        return idEventsRules;
+    public String getRuleId() {
+        return ruleId;
     }
 
-    public void setIdEventsRules(int idEventsRules) {
-        this.idEventsRules = idEventsRules;
+    public void setRuleId(String ruleId) {
+        this.ruleId = ruleId;
     }
 
     public String getMessage() {

@@ -2,8 +2,15 @@ package com.websystique.springmvc.controller;
 
 import com.websystique.springmvc.model.Employee;
 import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.EventsRules;
+import com.websystique.springmvc.model.Files;
+import com.websystique.springmvc.model.Rules;
+import com.websystique.springmvc.service.AuditLogService;
 import com.websystique.springmvc.service.EventService;
 import com.websystique.springmvc.service.EmployeeService;
+import com.websystique.springmvc.service.EventRuleService;
+import com.websystique.springmvc.service.FileService;
+import com.websystique.springmvc.service.RuleService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -52,12 +59,19 @@ public class HelloWorldController {
         return "welcome";
     }
 
-    
     @Autowired
-    EventService EventService;
-    
+    AuditLogService auditLogService;
+    @Autowired
+    EventService eventService;
+    @Autowired
+    FileService fileService;
+    @Autowired
+    RuleService ruleService;
+    @Autowired
+    EventRuleService eventRuleService;
     @RequestMapping(value = "/put", method = RequestMethod.PUT)
-    public String sayHelloAgainPut(HttpServletRequest request, ModelMap model) {
+    public String sayHelloAgainPut(HttpServletRequest request, ModelMap model, 
+            Events event, EventsRules eventRule, Rules rule, Files file) {
 
         System.out.println("ENTRO AL PUUUUUUUUUUUUUUT: " + new Date().toString());
 
@@ -121,12 +135,6 @@ public class HelloWorldController {
             }
 
             String data = buffer.toString();
-
-//            System.out.println("ANALISIS PARTE B: " + this.analizerPartB(parts[1]));
-//            System.out.println("ANALISIS PARTE H: " + this.analizerPartH(parts[7]));
-//            System.out.println("AHORA VA A GUARDAR EL EVENTO");
-
-            Events event = new Events();
             
             event.setPartA(parts[0]);
             event.setPartB(parts[1]);
@@ -156,11 +164,23 @@ public class HelloWorldController {
             event.setMethod(MapPartB.get("destinationPage"));
             event.setMethod(MapPartB.get("protocol"));
             
-            EventService.saveEvent(event);
-                       
-//            System.out.println("EL ID EN EL EVENTO VALE: " + evento.getId());
-//            System.out.println("LA PARTE A EN EL EVENTO VALE: " + evento.getPartA());
-//            System.out.println("LA PARTE Z EN EL EVENTO VALE: " + evento.getPartZ());
+            eventService.saveEvent(event);
+            
+            int cant = MapPartH.get("file").size();
+            for (int i = 0 ; i<cant ; i++) {
+                System.out.println("Vuelta Nro: " + i);
+                file.setFilePath(MapPartH.get("file").get(i));
+                file.setFileName(MapPartH.get("file").get(i));  //DESP CAMBIAR EL NOMBRE.
+                System.out.println("filePath: " + file.getFilePath());
+                System.out.println("fileName: " + file.getFileName());
+                System.out.println("fileID:" + file.getId());
+                fileService.saveFile(file);
+                file.setFilePath("");
+                file.setFileName("");
+                file.setId(null);
+            }
+            
+            
             
             System.out.println("TERMINO DE GUARDAR EL EVENTO");
             
@@ -221,14 +241,14 @@ public class HelloWorldController {
         //Separo en lineas
         String[] info = str.split("\n");
 
-        List<String> file = new ArrayList<String>(),
-                id = new ArrayList<String>(),
-                msg = new ArrayList<String>(),
-                severity = new ArrayList<String>();
-                String fileAux,
-                idAux,
-                msgAux,
-                severityAux;
+        List<String>    file = new ArrayList<String>(),
+                        id = new ArrayList<String>(),
+                        msg = new ArrayList<String>(),
+                        severity = new ArrayList<String>();
+                        String fileAux,
+                        idAux,
+                        msgAux,
+                        severityAux;
 
         for (int i = 1; i < info.length; i++) {
             //Verifico que la linea sea un message.

@@ -26,22 +26,22 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author usuario
+ * @author martin
  */
 @Entity
 @Table(name = "Events")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Events.findAll", query = "SELECT e FROM Events e"),
-    @NamedQuery(name = "Events.findById", query = "SELECT e FROM Events e WHERE e.id = :id"),
-    @NamedQuery(name = "Events.findByDateEvent", query = "SELECT e FROM Events e WHERE e.dateEvent = :dateEvent"),
-    @NamedQuery(name = "Events.findByTransactionId", query = "SELECT e FROM Events e WHERE e.transactionId = :transactionId"),
-    @NamedQuery(name = "Events.findByClientIp", query = "SELECT e FROM Events e WHERE e.clientIp = :clientIp"),
-    @NamedQuery(name = "Events.findByClientPort", query = "SELECT e FROM Events e WHERE e.clientPort = :clientPort"),
-    @NamedQuery(name = "Events.findByServerIp", query = "SELECT e FROM Events e WHERE e.serverIp = :serverIp"),
-    @NamedQuery(name = "Events.findByServerPort", query = "SELECT e FROM Events e WHERE e.serverPort = :serverPort"),
-    @NamedQuery(name = "Events.findByMethod", query = "SELECT e FROM Events e WHERE e.method = :method"),
-    @NamedQuery(name = "Events.findByProtocol", query = "SELECT e FROM Events e WHERE e.protocol = :protocol")})
+    @NamedQuery(name = "Events.findAll", query = "SELECT e FROM Events e")
+    , @NamedQuery(name = "Events.findById", query = "SELECT e FROM Events e WHERE e.id = :id")
+    , @NamedQuery(name = "Events.findByDateEvent", query = "SELECT e FROM Events e WHERE e.dateEvent = :dateEvent")
+    , @NamedQuery(name = "Events.findByTransactionId", query = "SELECT e FROM Events e WHERE e.transactionId = :transactionId")
+    , @NamedQuery(name = "Events.findByClientIp", query = "SELECT e FROM Events e WHERE e.clientIp = :clientIp")
+    , @NamedQuery(name = "Events.findByClientPort", query = "SELECT e FROM Events e WHERE e.clientPort = :clientPort")
+    , @NamedQuery(name = "Events.findByServerIp", query = "SELECT e FROM Events e WHERE e.serverIp = :serverIp")
+    , @NamedQuery(name = "Events.findByServerPort", query = "SELECT e FROM Events e WHERE e.serverPort = :serverPort")
+    , @NamedQuery(name = "Events.findByMethod", query = "SELECT e FROM Events e WHERE e.method = :method")
+    , @NamedQuery(name = "Events.findByProtocol", query = "SELECT e FROM Events e WHERE e.protocol = :protocol")})
 public class Events implements Serializable {
 
     private static final long serialVersionUID = 1L;

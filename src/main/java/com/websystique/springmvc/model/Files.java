@@ -8,6 +8,7 @@ package com.websystique.springmvc.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,16 +25,16 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author usuario
+ * @author martin
  */
 @Entity
 @Table(name = "Files")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Files.findAll", query = "SELECT f FROM Files f"),
-    @NamedQuery(name = "Files.findById", query = "SELECT f FROM Files f WHERE f.id = :id"),
-    @NamedQuery(name = "Files.findByFileName", query = "SELECT f FROM Files f WHERE f.fileName = :fileName"),
-    @NamedQuery(name = "Files.findByFilePath", query = "SELECT f FROM Files f WHERE f.filePath = :filePath")})
+    @NamedQuery(name = "Files.findAll", query = "SELECT f FROM Files f")
+    , @NamedQuery(name = "Files.findById", query = "SELECT f FROM Files f WHERE f.id = :id")
+    , @NamedQuery(name = "Files.findByFileName", query = "SELECT f FROM Files f WHERE f.fileName = :fileName")
+    , @NamedQuery(name = "Files.findByFilePath", query = "SELECT f FROM Files f WHERE f.filePath = :filePath")})
 public class Files implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,7 +53,7 @@ public class Files implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "filePath")
     private String filePath;
-    @OneToMany(mappedBy = "idFile")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idFile")
     private List<Rules> rulesList;
 
     public Files() {

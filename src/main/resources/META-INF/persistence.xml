@@ -3,6 +3,11 @@
   <persistence-unit name="com.PruebaParser.springmvc_ParserModSecurityApplication_war_1.0.0PU" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>java:app/PruebaLog</jta-data-source>
+    <class>com.websystique.springmvc.model.EventsRules</class>
+    <class>com.websystique.springmvc.model.Files</class>
+    <class>com.websystique.springmvc.model.Rules</class>
+    <class>com.websystique.springmvc.model.Events</class>
+    <class>com.websystique.springmvc.model.Employee</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
