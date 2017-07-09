@@ -16,7 +16,10 @@ public class FileServiceImpl implements FileService {
  
     @Override
     public void saveFile(Files file) {
-        dao.saveFile(file);
+        if (dao.findByPath(file.getFilePath())!=null){
+        }else{
+            dao.saveFile(file);
+        }
     }
      
 }

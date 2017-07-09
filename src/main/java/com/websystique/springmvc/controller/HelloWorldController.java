@@ -166,11 +166,12 @@ public class HelloWorldController {
             
             eventService.saveEvent(event);
             
-            int cant = MapPartH.get("file").size();
+            int cant = MapPartH.get("filePath").size();
+            
             for (int i = 0 ; i<cant ; i++) {
                 System.out.println("Vuelta Nro: " + i);
-                file.setFilePath(MapPartH.get("file").get(i));
-                file.setFileName(MapPartH.get("file").get(i));  //DESP CAMBIAR EL NOMBRE.
+                file.setFilePath(MapPartH.get("filePath").get(i));
+                file.setFileName(MapPartH.get("fileName").get(i));  //DESP CAMBIAR EL NOMBRE.
                 System.out.println("filePath: " + file.getFilePath());
                 System.out.println("fileName: " + file.getFileName());
                 System.out.println("fileID:" + file.getId());
@@ -179,8 +180,6 @@ public class HelloWorldController {
                 file.setFileName("");
                 file.setId(null);
             }
-            
-            
             
             System.out.println("TERMINO DE GUARDAR EL EVENTO");
             
@@ -241,14 +240,17 @@ public class HelloWorldController {
         //Separo en lineas
         String[] info = str.split("\n");
 
-        List<String>    file = new ArrayList<String>(),
+        List<String>    filePath = new ArrayList<String>(),
+                        fileName = new ArrayList<String>(),
                         id = new ArrayList<String>(),
                         msg = new ArrayList<String>(),
                         severity = new ArrayList<String>();
-                        String fileAux,
-                        idAux,
-                        msgAux,
-                        severityAux;
+        
+        String  filePathAux,
+                fileNameAux,
+                idAux,
+                msgAux,
+                severityAux;
 
         for (int i = 1; i < info.length; i++) {
             //Verifico que la linea sea un message.
@@ -256,10 +258,20 @@ public class HelloWorldController {
 
                 int beginFile = info[i].indexOf("[file ");
                 if (beginFile > -1) {
-                    fileAux = info[i].substring(beginFile);
-                    file.add(fileAux.substring(7, fileAux.indexOf("]") - 1));
+                    filePathAux = info[i].substring(beginFile);
+                    String aux = filePathAux.substring(7, filePathAux.indexOf("]") - 1);
+                    filePath.add(aux);
+                    
+                    //Tomo el fileName
+                    StringBuilder sb = new StringBuilder(aux); 
+                    aux = sb.reverse().toString();
+                    String auxRev = aux.substring(0,aux.indexOf("/"));
+                    sb = new StringBuilder(auxRev);
+                    fileNameAux = sb.reverse().toString();
+                    fileName.add(fileNameAux);
+                    
                 } else {
-                    file.add("");
+                    filePath.add("");
                 }
 
                 int beginId = info[i].indexOf("[id ");
@@ -289,7 +301,8 @@ public class HelloWorldController {
             }
         }
 
-        result.put("file", file);
+        result.put("filePath", filePath);
+        result.put("fileName", fileName);
         result.put("id", id);
         result.put("msg", msg);
         result.put("severity", severity);

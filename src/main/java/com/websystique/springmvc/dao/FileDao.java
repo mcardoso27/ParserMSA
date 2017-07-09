@@ -7,4 +7,6 @@ public interface FileDao {
     
     void saveFile(Files file);
     
+    public Files findByPath(String path);
+    
 }
