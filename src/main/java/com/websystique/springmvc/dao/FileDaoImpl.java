@@ -2,7 +2,6 @@ package com.websystique.springmvc.dao;
 
 import com.websystique.springmvc.model.Files;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 

@@ -5,5 +5,7 @@ import com.websystique.springmvc.model.Files;
 public interface FileService {
      
     void saveFile(Files file);
+    
+    Files findByFilePath(String fp);
      
 }

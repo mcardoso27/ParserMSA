@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
  
 import com.websystique.springmvc.dao.RuleDao;
 import com.websystique.springmvc.model.Rules;
- 
+
 @Service("ruleService")
 @Transactional
 public class RuleServiceImpl implements RuleService {
@@ -16,7 +16,10 @@ public class RuleServiceImpl implements RuleService {
  
     @Override
     public void saveRule(Rules rule) {
-        dao.saveRule(rule);
+        if (dao.findByRuleId(rule.getRuleId())!=null){
+        }else{
+            dao.saveRule(rule);
+        }
     }
-     
+    
 }

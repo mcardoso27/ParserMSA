@@ -8,7 +8,6 @@ package com.websystique.springmvc.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -142,7 +141,7 @@ public class Events implements Serializable {
     @Size(max = 255)
     @Column(name = "protocol")
     private String protocol;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "eventsId")
+    @OneToMany(mappedBy = "eventsId")
     private List<EventsRules> eventsRulesList;
 
     public Events() {

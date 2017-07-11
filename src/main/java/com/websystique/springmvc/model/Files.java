@@ -8,7 +8,6 @@ package com.websystique.springmvc.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,7 +52,7 @@ public class Files implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "filePath")
     private String filePath;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idFile")
+    @OneToMany(mappedBy = "idFile")
     private List<Rules> rulesList;
 
     public Files() {

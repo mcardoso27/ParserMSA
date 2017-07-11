@@ -77,22 +77,22 @@ public class HelloWorldController {
 
         try {
 
-            PrintWriter writer = new PrintWriter("/home/martin/Desktop/salidaJava.txt", "UTF-8");
+//            PrintWriter writer = new PrintWriter("/home/martin/Desktop/salidaJava.txt", "UTF-8");
 
             //Tomo las cabeceras
-            writer.println("Nombre y valores de los headers\n");
+//            writer.println("Nombre y valores de los headers\n");
             Enumeration<String> e = request.getHeaderNames();
             while (e.hasMoreElements()) {
                 String headerName = e.nextElement();
                 String headerValue = request.getHeader(headerName);
-                writer.println(headerName + ": " + headerValue + "\n");
+//                writer.println(headerName + ": " + headerValue + "\n");
             }
 
             //Tomo el payload
             StringBuilder buffer = new StringBuilder();
             BufferedReader reader = request.getReader();
             String line;
-            writer.println("PAYLOAD\n");
+//            writer.println("PAYLOAD\n");
 
             String partsLetter[] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "Z"};
             //Si estan activas todas las partes son 12:ABCDEFGHIJKZ 
@@ -116,25 +116,25 @@ public class HelloWorldController {
                         parts[indx] = parts[indx] + line + "\n";
                     }
 
-                    buffer.append(line);
-                    writer.println(line);
+//                    buffer.append(line);
+//                    writer.println(line);
 
                 } else {
-                    buffer.append(line);
-                    writer.println(line);
+//                    buffer.append(line);
+//                    writer.println(line);
                 }
 
             }
 
-            writer.println("\n Aca abajo viene las partes separadas.\n");
-            for (int i = 0; i < parts.length; i++) {
-                System.out.println("Parte " + partsLetter[i]);
-                System.out.println(parts[i]);
-                writer.println("\nParte " + partsLetter[i] + "\n");
-                writer.println(parts[i]);
-            }
+//            writer.println("\n Aca abajo viene las partes separadas.\n");
+//            for (int i = 0; i < parts.length; i++) {
+//                System.out.println("Parte " + partsLetter[i]);
+//                System.out.println(parts[i]);
+//                writer.println("\nParte " + partsLetter[i] + "\n");
+//                writer.println(parts[i]);
+//            }
 
-            String data = buffer.toString();
+//            String data = buffer.toString();
             
             event.setPartA(parts[0]);
             event.setPartB(parts[1]);
@@ -166,35 +166,49 @@ public class HelloWorldController {
             
             eventService.saveEvent(event);
             
-            int cant = MapPartH.get("filePath").size();
-            
+            int cant = MapPartH.get("filePath").size();//filePath esta siempre presente.
             for (int i = 0 ; i<cant ; i++) {
+                
                 System.out.println("Vuelta Nro: " + i);
-                file.setFilePath(MapPartH.get("filePath").get(i));
-                file.setFileName(MapPartH.get("fileName").get(i));  //DESP CAMBIAR EL NOMBRE.
-                System.out.println("filePath: " + file.getFilePath());
-                System.out.println("fileName: " + file.getFileName());
-                System.out.println("fileID:" + file.getId());
-                fileService.saveFile(file);
+                
+                file = fileService.findByFilePath(MapPartH.get("filePath").get(i));
+                               
+                if ( file == null ){
+                    file.setFilePath(MapPartH.get("filePath").get(i));
+                    file.setFileName(MapPartH.get("fileName").get(i));
+                    fileService.saveFile(file);
+                    
+                    //GUARDO RULES
+                    //Primero lo guardo y dsp lo pido para obtener el id asignado
+                    file = fileService.findByFilePath(MapPartH.get("filePath").get(i));
+                }
+                
+                rule.setIdFile(file);
+                rule.setRuleId(MapPartH.get("id").get(i));
+                rule.setMessage(MapPartH.get("msg").get(i));
+                rule.setSeverity(MapPartH.get("severity").get(i));
+
+                System.out.println("HASTA ACA TODO BIEN. VA A GUARDAR LA REGLA.");
+                ruleService.saveRule(rule);
+
+                //LIMPIO LAS VARIABLES
                 file.setFilePath("");
                 file.setFileName("");
                 file.setId(null);
+                rule.setRuleId("");
+                rule.setMessage("");
+                rule.setSeverity("");
+                rule.setIdFile(null);
             }
             
             System.out.println("TERMINO DE GUARDAR EL EVENTO");
             
-            writer.close();
+//            writer.close();
 
         } catch (IOException e) {
             System.out.println("¡¡¡¡¡¡¡  NO SE PUDO ESCRIBIR  !!!!");
         }
-
         return "welcome";
-
-    }
-
-    private String saludo() {
-        return "hola";
     }
 
     private HashMap<String, String> analizerPartA(String str) {
