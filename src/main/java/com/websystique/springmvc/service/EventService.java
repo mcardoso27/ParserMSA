@@ -5,5 +5,7 @@ import com.websystique.springmvc.model.Events;
 public interface EventService {
      
     void saveEvent(Events event);
+    
+    Events findByTransactionId(String transactionId);
      
 }

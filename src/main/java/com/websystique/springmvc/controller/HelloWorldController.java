@@ -14,6 +14,7 @@ import com.websystique.springmvc.service.RuleService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -23,6 +24,9 @@ import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import org.hibernate.JDBCException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -69,16 +73,20 @@ public class HelloWorldController {
     RuleService ruleService;
     @Autowired
     EventRuleService eventRuleService;
+
     @RequestMapping(value = "/put", method = RequestMethod.PUT)
-    public String sayHelloAgainPut(HttpServletRequest request, ModelMap model, 
-            Events event, EventsRules eventRule, Rules rule, Files file) {
+    public String sayHelloAgainPut(HttpServletRequest request,
+            ModelMap model,
+            Events event,
+            EventsRules eventRule,
+            Rules rule,
+            Files file) {
 
         System.out.println("ENTRO AL PUUUUUUUUUUUUUUT: " + new Date().toString());
 
         try {
 
 //            PrintWriter writer = new PrintWriter("/home/martin/Desktop/salidaJava.txt", "UTF-8");
-
             //Tomo las cabeceras
 //            writer.println("Nombre y valores de los headers\n");
             Enumeration<String> e = request.getHeaderNames();
@@ -118,7 +126,6 @@ public class HelloWorldController {
 
 //                    buffer.append(line);
 //                    writer.println(line);
-
                 } else {
 //                    buffer.append(line);
 //                    writer.println(line);
@@ -133,9 +140,7 @@ public class HelloWorldController {
 //                writer.println("\nParte " + partsLetter[i] + "\n");
 //                writer.println(parts[i]);
 //            }
-
 //            String data = buffer.toString();
-            
             event.setPartA(parts[0]);
             event.setPartB(parts[1]);
             event.setPartC(parts[2]);
@@ -148,63 +153,82 @@ public class HelloWorldController {
             event.setPartJ(parts[9]);
             event.setPartK(parts[10]);
             event.setPartZ(parts[11]);
-            
+
             HashMap<String, String> MapPartA = this.analizerPartA(parts[0]);
             HashMap<String, String> MapPartB = this.analizerPartB(parts[1]);
             HashMap<String, List<String>> MapPartH = this.analizerPartH(parts[7]);
-            
+
             event.setDateEvent(MapPartA.get("date"));
             event.setTransactionId(MapPartA.get("transactionId"));
             event.setClientIp(MapPartA.get("clientIp"));
             event.setClientPort(MapPartA.get("clientPort"));
             event.setServerIp(MapPartA.get("serverIp"));
             event.setServerPort(MapPartA.get("serverPort"));
-            
+
             event.setMethod(MapPartB.get("method"));
             event.setMethod(MapPartB.get("destinationPage"));
             event.setMethod(MapPartB.get("protocol"));
-            
-            eventService.saveEvent(event);
-            
-            int cant = MapPartH.get("filePath").size();//filePath esta siempre presente.
-            for (int i = 0 ; i<cant ; i++) {
-                
-                System.out.println("Vuelta Nro: " + i);
-                
-                file = fileService.findByFilePath(MapPartH.get("filePath").get(i));
-                               
-                if ( file == null ){
+
+            System.out.println("ANTES DE GUARDAR EL EVENTO");
+            try {
+                eventService.saveEvent(event);
+            } catch (ConstraintViolationException ese) {
+                System.out.println("ERROR CONSTRAINT: " + ese.getMessage());
+            } catch (JDBCConnectionException ese) {
+                System.out.println("ERROR CONNECTION: " + ese.getMessage());
+            }
+
+            int cant = MapPartH.get("filePath").size();//cant de reglas act. filePath esta siempre presente.
+            for (int i = 0; i < cant; i++) {
+
+                System.out.println("Vuelta Nrooooooooooooooooooooooooooooooooooooooooooooooooooo: " + i);
+
+                String filePath = MapPartH.get("filePath").get(i);
+                if (fileService.findByFilePath(filePath) == null) {
                     file.setFilePath(MapPartH.get("filePath").get(i));
                     file.setFileName(MapPartH.get("fileName").get(i));
                     fileService.saveFile(file);
+                }else{
+                    file.setFilePath(filePath);
+                }
                     
-                    //GUARDO RULES
-                    //Primero lo guardo y dsp lo pido para obtener el id asignado
-                    file = fileService.findByFilePath(MapPartH.get("filePath").get(i));
+
+                String ruleId = MapPartH.get("id").get(i);
+                if (ruleService.findByRuleId(ruleId) == null) {
+                    rule.setFileId(file);
+                    rule.setRuleId(MapPartH.get("id").get(i));
+                    rule.setMessage(MapPartH.get("msg").get(i));
+                    rule.setSeverity(MapPartH.get("severity").get(i));
+                    ruleService.saveRule(rule);
+                }else{
+                    rule.setRuleId(ruleId);
                 }
                 
-                rule.setIdFile(file);
-                rule.setRuleId(MapPartH.get("id").get(i));
-                rule.setMessage(MapPartH.get("msg").get(i));
-                rule.setSeverity(MapPartH.get("severity").get(i));
+//                event = eventService.findByTransactionId(event.getTransactionId());
+//                rule = ruleService.findByRuleId(rule.getRuleId());
+                
+                eventRule.setTransactionId(event);
+                eventRule.setRuleId(rule);
+                System.out.println("EVENT Q VOY A GUARDAR: " + eventRule.getTransactionId());
+                System.out.println("RULE Q VOY A GUARDAR: " + eventRule.getRuleId());
+                eventRuleService.saveEventRule(eventRule);
 
-                System.out.println("HASTA ACA TODO BIEN. VA A GUARDAR LA REGLA.");
-                ruleService.saveRule(rule);
+                System.out.println("LISTO GUARDO BIEN");
 
                 //LIMPIO LAS VARIABLES
                 file.setFilePath("");
                 file.setFileName("");
-                file.setId(null);
                 rule.setRuleId("");
                 rule.setMessage("");
                 rule.setSeverity("");
-                rule.setIdFile(null);
+                rule.setFileId(file);
+                eventRule.setRuleId(rule);
+                eventRule.setId(null);
             }
-            
-            System.out.println("TERMINO DE GUARDAR EL EVENTO");
-            
-//            writer.close();
 
+            System.out.println("TERMINO DE GUARDAR TODOOOOOOO");
+
+//            writer.close();
         } catch (IOException e) {
             System.out.println("¡¡¡¡¡¡¡  NO SE PUDO ESCRIBIR  !!!!");
         }
@@ -254,13 +278,13 @@ public class HelloWorldController {
         //Separo en lineas
         String[] info = str.split("\n");
 
-        List<String>    filePath = new ArrayList<String>(),
-                        fileName = new ArrayList<String>(),
-                        id = new ArrayList<String>(),
-                        msg = new ArrayList<String>(),
-                        severity = new ArrayList<String>();
-        
-        String  filePathAux,
+        List<String> filePath = new ArrayList<String>(),
+                fileName = new ArrayList<String>(),
+                id = new ArrayList<String>(),
+                msg = new ArrayList<String>(),
+                severity = new ArrayList<String>();
+
+        String filePathAux,
                 fileNameAux,
                 idAux,
                 msgAux,
@@ -275,15 +299,15 @@ public class HelloWorldController {
                     filePathAux = info[i].substring(beginFile);
                     String aux = filePathAux.substring(7, filePathAux.indexOf("]") - 1);
                     filePath.add(aux);
-                    
+
                     //Tomo el fileName
-                    StringBuilder sb = new StringBuilder(aux); 
+                    StringBuilder sb = new StringBuilder(aux);
                     aux = sb.reverse().toString();
-                    String auxRev = aux.substring(0,aux.indexOf("/"));
+                    String auxRev = aux.substring(0, aux.indexOf("/"));
                     sb = new StringBuilder(auxRev);
                     fileNameAux = sb.reverse().toString();
                     fileName.add(fileNameAux);
-                    
+
                 } else {
                     filePath.add("");
                 }
@@ -428,5 +452,4 @@ public class HelloWorldController {
 //        service.deleteEmployeeBySsn(ssn);
 //        return "redirect:/list";
 //    }
-
 }

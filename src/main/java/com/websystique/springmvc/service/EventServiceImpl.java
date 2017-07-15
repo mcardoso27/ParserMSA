@@ -18,5 +18,11 @@ public class EventServiceImpl implements EventService {
     public void saveEvent(Events event) {
         dao.saveEvent(event);
     }
+    
+    @Override
+    public Events findByTransactionId(String transactionId) {
+        Events event = dao.findByTransactionId(transactionId);
+        return event;
+    }
      
 }

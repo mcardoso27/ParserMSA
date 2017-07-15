@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `websystique` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `websystique`;
 -- MySQL dump 10.13  Distrib 5.5.55, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: websystique
@@ -14,14 +16,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Current Database: `websystique`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `websystique` /*!40100 DEFAULT CHARACTER SET latin1 */;
-
-USE `websystique`;
 
 --
 -- Table structure for table `EMPLOYEE`
@@ -58,7 +52,6 @@ DROP TABLE IF EXISTS `Events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Events` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `PartA` longtext NOT NULL,
   `PartB` longtext,
   `PartC` longtext,
@@ -72,7 +65,7 @@ CREATE TABLE `Events` (
   `PartK` longtext,
   `PartZ` longtext NOT NULL,
   `dateEvent` varchar(45) NOT NULL,
-  `transactionId` tinytext NOT NULL,
+  `transactionId` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `clientIp` tinytext NOT NULL,
   `clientPort` tinytext NOT NULL,
   `serverIp` tinytext NOT NULL,
@@ -80,8 +73,9 @@ CREATE TABLE `Events` (
   `method` tinytext,
   `destinationPage` mediumtext,
   `protocol` tinytext,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`transactionId`),
+  UNIQUE KEY `transactionId_UNIQUE` (`transactionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,14 +96,14 @@ DROP TABLE IF EXISTS `EventsRules`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `EventsRules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `eventsId` int(11) NOT NULL,
-  `rulesId` int(11) NOT NULL,
+  `transactionId` varchar(100) NOT NULL,
+  `ruleId` varchar(10) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_EventsRules_Events1_idx` (`eventsId`),
-  KEY `fk_EventsRules_Rules1_idx` (`rulesId`),
-  CONSTRAINT `fk_EventsRules_Events1` FOREIGN KEY (`eventsId`) REFERENCES `Events` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_EventsRules_Rules1` FOREIGN KEY (`rulesId`) REFERENCES `Rules` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `fk_EventsRules_Events1_idx` (`transactionId`),
+  KEY `fk_EventsRules_Rules1_idx` (`ruleId`),
+  CONSTRAINT `fk_EventsRules_Events1` FOREIGN KEY (`transactionId`) REFERENCES `Events` (`transactionId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_EventsRules_Rules1` FOREIGN KEY (`ruleId`) REFERENCES `Rules` (`ruleId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,12 +123,10 @@ DROP TABLE IF EXISTS `Files`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Files` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `fileName` tinytext NOT NULL,
-  `filePath` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `filePath_UNIQUE` (`filePath`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+  `filePath` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`filePath`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +135,6 @@ CREATE TABLE `Files` (
 
 LOCK TABLES `Files` WRITE;
 /*!40000 ALTER TABLE `Files` DISABLE KEYS */;
-INSERT INTO `Files` VALUES (9,'REQUEST-920-PROTOCOL-ENFORCEMENT.conf','/usr/share/modsecurity-crs/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf'),(10,'REQUEST-942-APPLICATION-ATTACK-SQLI.conf','/usr/share/modsecurity-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf'),(12,'REQUEST-949-BLOCKING-EVALUATION.conf','/usr/share/modsecurity-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf'),(13,'RESPONSE-980-CORRELATION.conf','/usr/share/modsecurity-crs/rules/RESPONSE-980-CORRELATION.conf');
 /*!40000 ALTER TABLE `Files` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,16 +146,14 @@ DROP TABLE IF EXISTS `Rules`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Rules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idFile` int(11) NOT NULL,
-  `ruleId` varchar(6) NOT NULL,
+  `ruleId` varchar(10) NOT NULL,
   `message` tinytext,
   `severity` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `RuleId_UNIQUE` (`ruleId`),
-  KEY `fk_Rules_Files1_idx` (`idFile`),
-  CONSTRAINT `fk_Rules_Files1` FOREIGN KEY (`idFile`) REFERENCES `Files` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  `fileId` varchar(255) NOT NULL,
+  PRIMARY KEY (`ruleId`),
+  KEY `fk_Rules_Files1_idx` (`fileId`),
+  CONSTRAINT `fk_Rules_Files1` FOREIGN KEY (`fileId`) REFERENCES `Files` (`filePath`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +162,6 @@ CREATE TABLE `Rules` (
 
 LOCK TABLES `Rules` WRITE;
 /*!40000 ALTER TABLE `Rules` DISABLE KEYS */;
-INSERT INTO `Rules` VALUES (1,9,'920350','Host header is a numeric IP address','WARNING'),(2,10,'942100','SQL Injection Attack Detected via libinjection','CRITICAL'),(3,12,'949110','Inbound Anomaly Score Exceeded (Total Score: 13)','CRITICAL'),(4,13,'980130','Inbound Anomaly Score Exceeded (Total Inbound Score: 13 - SQLI=10,XSS=0,RFI=0,LFI=0,RCE=0,PHPI=0,HTTP=0,SESS=0): SQL Injection Attack Detected via libinjection','');
 /*!40000 ALTER TABLE `Rules` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -186,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-10 22:24:12
+-- Dump completed on 2017-07-15 20:49:52

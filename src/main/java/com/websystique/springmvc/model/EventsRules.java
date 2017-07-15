@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Historia Clinica Digital Laboral
+ * @author Martin Cardoso
  */
 package com.websystique.springmvc.model;
 
@@ -17,11 +16,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author martin
+ * @author Martin Cardoso
  */
 @Entity
 @Table(name = "EventsRules")
@@ -37,12 +37,16 @@ public class EventsRules implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @JoinColumn(name = "eventsId", referencedColumnName = "ID")
+    
+    
+    @JoinColumn(name = "transactionId", referencedColumnName = "transactionId")
     @ManyToOne(optional = false)
-    private Events eventsId;
-    @JoinColumn(name = "rulesId", referencedColumnName = "id")
+    private Events transactionId;
+    
+    
+    @JoinColumn(name = "ruleId", referencedColumnName = "ruleId")
     @ManyToOne(optional = false)
-    private Rules rulesId;
+    private Rules ruleId;
 
     public EventsRules() {
     }
@@ -59,20 +63,20 @@ public class EventsRules implements Serializable {
         this.id = id;
     }
 
-    public Events getEventsId() {
-        return eventsId;
+    public Events getTransactionId() {
+        return transactionId;
     }
 
-    public void setEventsId(Events eventsId) {
-        this.eventsId = eventsId;
+    public void setTransactionId(Events transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public Rules getRulesId() {
-        return rulesId;
+    public Rules getRuleId() {
+        return ruleId;
     }
 
-    public void setRulesId(Rules rulesId) {
-        this.rulesId = rulesId;
+    public void setRuleId(Rules ruleId) {
+        this.ruleId = ruleId;
     }
 
     @Override

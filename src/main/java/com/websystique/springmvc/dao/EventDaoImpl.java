@@ -15,5 +15,13 @@ public class EventDaoImpl extends AbstractDao<Integer, Events> implements EventD
     public void saveEvent(Events event) {
         persist(event);
     }
+    
+    @Override
+    public Events findByTransactionId(String transactionId){
+        Criteria crit = createEntityCriteria();
+        crit.add(Restrictions.eq("transactionId", transactionId));
+        Events event = (Events) crit.uniqueResult();
+        return event;
+    }
  
 }

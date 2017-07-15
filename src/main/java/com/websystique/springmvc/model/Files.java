@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Historia Clinica Digital Laboral
+ * @author Martin Cardoso
  */
 package com.websystique.springmvc.model;
 
@@ -10,8 +9,6 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -24,56 +21,42 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author martin
+ * @author Martin Cardoso
  */
 @Entity
 @Table(name = "Files")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Files.findAll", query = "SELECT f FROM Files f")
-    , @NamedQuery(name = "Files.findById", query = "SELECT f FROM Files f WHERE f.id = :id")
     , @NamedQuery(name = "Files.findByFileName", query = "SELECT f FROM Files f WHERE f.fileName = :fileName")
     , @NamedQuery(name = "Files.findByFilePath", query = "SELECT f FROM Files f WHERE f.filePath = :filePath")})
 public class Files implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "fileName")
     private String fileName;
+    @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "filePath")
     private String filePath;
-    @OneToMany(mappedBy = "idFile")
+    @OneToMany(mappedBy = "fileId")
     private List<Rules> rulesList;
 
     public Files() {
     }
 
-    public Files(Integer id) {
-        this.id = id;
-    }
-
-    public Files(Integer id, String fileName, String filePath) {
-        this.id = id;
-        this.fileName = fileName;
+    public Files(String filePath) {
         this.filePath = filePath;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Files(String filePath, String fileName) {
+        this.filePath = filePath;
+        this.fileName = fileName;
     }
 
     public String getFileName() {
@@ -104,7 +87,7 @@ public class Files implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (filePath != null ? filePath.hashCode() : 0);
         return hash;
     }
 
@@ -115,7 +98,7 @@ public class Files implements Serializable {
             return false;
         }
         Files other = (Files) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.filePath == null && other.filePath != null) || (this.filePath != null && !this.filePath.equals(other.filePath))) {
             return false;
         }
         return true;
@@ -123,7 +106,7 @@ public class Files implements Serializable {
 
     @Override
     public String toString() {
-        return "com.websystique.springmvc.model.Files[ id=" + id + " ]";
+        return "com.websystique.springmvc.model.Files[ filePath=" + filePath + " ]";
     }
     
 }

@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Historia Clinica Digital Laboral
+ * @author Martin Cardoso
  */
 package com.websystique.springmvc.model;
 
@@ -10,8 +9,6 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
@@ -25,14 +22,13 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author martin
+ * @author Martin Cardoso
  */
 @Entity
 @Table(name = "Events")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Events.findAll", query = "SELECT e FROM Events e")
-    , @NamedQuery(name = "Events.findById", query = "SELECT e FROM Events e WHERE e.id = :id")
     , @NamedQuery(name = "Events.findByDateEvent", query = "SELECT e FROM Events e WHERE e.dateEvent = :dateEvent")
     , @NamedQuery(name = "Events.findByTransactionId", query = "SELECT e FROM Events e WHERE e.transactionId = :transactionId")
     , @NamedQuery(name = "Events.findByClientIp", query = "SELECT e FROM Events e WHERE e.clientIp = :clientIp")
@@ -44,11 +40,6 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Events implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Lob
@@ -106,9 +97,10 @@ public class Events implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "dateEvent")
     private String dateEvent;
+    @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 100)
     @Column(name = "transactionId")
     private String transactionId;
     @Basic(optional = false)
@@ -141,34 +133,25 @@ public class Events implements Serializable {
     @Size(max = 255)
     @Column(name = "protocol")
     private String protocol;
-    @OneToMany(mappedBy = "eventsId")
+    @OneToMany(mappedBy = "transactionId")
     private List<EventsRules> eventsRulesList;
 
     public Events() {
     }
 
-    public Events(Integer id) {
-        this.id = id;
+    public Events(String transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public Events(Integer id, String partA, String partZ, String dateEvent, String transactionId, String clientIp, String clientPort, String serverIp, String serverPort) {
-        this.id = id;
+    public Events(String transactionId, String partA, String partZ, String dateEvent, String clientIp, String clientPort, String serverIp, String serverPort) {
+        this.transactionId = transactionId;
         this.partA = partA;
         this.partZ = partZ;
         this.dateEvent = dateEvent;
-        this.transactionId = transactionId;
         this.clientIp = clientIp;
         this.clientPort = clientPort;
         this.serverIp = serverIp;
         this.serverPort = serverPort;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getPartA() {
@@ -351,7 +334,7 @@ public class Events implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (transactionId != null ? transactionId.hashCode() : 0);
         return hash;
     }
 
@@ -362,7 +345,7 @@ public class Events implements Serializable {
             return false;
         }
         Events other = (Events) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.transactionId == null && other.transactionId != null) || (this.transactionId != null && !this.transactionId.equals(other.transactionId))) {
             return false;
         }
         return true;
@@ -370,7 +353,7 @@ public class Events implements Serializable {
 
     @Override
     public String toString() {
-        return "com.websystique.springmvc.model.Events[ id=" + id + " ]";
+        return "com.websystique.springmvc.model.Events[ transactionId=" + transactionId + " ]";
     }
     
 }

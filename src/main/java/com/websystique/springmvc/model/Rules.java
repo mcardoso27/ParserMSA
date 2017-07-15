@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Historia Clinica Digital Laboral
+ * @author Martin Cardoso
  */
 package com.websystique.springmvc.model;
 
@@ -10,8 +9,6 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,14 +23,13 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author martin
+ * @author Martin Cardoso
  */
 @Entity
 @Table(name = "Rules")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Rules.findAll", query = "SELECT r FROM Rules r")
-    , @NamedQuery(name = "Rules.findById", query = "SELECT r FROM Rules r WHERE r.id = :id")
     , @NamedQuery(name = "Rules.findByRuleId", query = "SELECT r FROM Rules r WHERE r.ruleId = :ruleId")
     , @NamedQuery(name = "Rules.findByMessage", query = "SELECT r FROM Rules r WHERE r.message = :message")
     , @NamedQuery(name = "Rules.findBySeverity", query = "SELECT r FROM Rules r WHERE r.severity = :severity")})
@@ -41,45 +37,32 @@ public class Rules implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 6)
+    @Size(min = 1, max = 10)
     @Column(name = "ruleId")
     private String ruleId;
+    
     @Size(max = 255)
     @Column(name = "message")
     private String message;
+    
     @Size(max = 45)
     @Column(name = "severity")
     private String severity;
-    @OneToMany(mappedBy = "rulesId")
+    
+    @OneToMany(mappedBy = "ruleId")
     private List<EventsRules> eventsRulesList;
-    @JoinColumn(name = "idFile", referencedColumnName = "id")
+    
+    @JoinColumn(name = "fileId", referencedColumnName = "filePath")
     @ManyToOne(optional = false)
-    private Files idFile;
+    private Files fileId;
 
     public Rules() {
     }
 
-    public Rules(Integer id) {
-        this.id = id;
-    }
-
-    public Rules(Integer id, String ruleId) {
-        this.id = id;
+    public Rules(String ruleId) {
         this.ruleId = ruleId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getRuleId() {
@@ -115,18 +98,18 @@ public class Rules implements Serializable {
         this.eventsRulesList = eventsRulesList;
     }
 
-    public Files getIdFile() {
-        return idFile;
+    public Files getFileId() {
+        return fileId;
     }
 
-    public void setIdFile(Files idFile) {
-        this.idFile = idFile;
+    public void setFileId(Files fileId) {
+        this.fileId = fileId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (ruleId != null ? ruleId.hashCode() : 0);
         return hash;
     }
 
@@ -137,7 +120,7 @@ public class Rules implements Serializable {
             return false;
         }
         Rules other = (Rules) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.ruleId == null && other.ruleId != null) || (this.ruleId != null && !this.ruleId.equals(other.ruleId))) {
             return false;
         }
         return true;
@@ -145,7 +128,7 @@ public class Rules implements Serializable {
 
     @Override
     public String toString() {
-        return "com.websystique.springmvc.model.Rules[ id=" + id + " ]";
+        return "com.websystique.springmvc.model.Rules[ ruleId=" + ruleId + " ]";
     }
     
 }
