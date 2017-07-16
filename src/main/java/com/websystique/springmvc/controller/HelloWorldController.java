@@ -195,7 +195,7 @@ public class HelloWorldController {
 
                 String ruleId = MapPartH.get("id").get(i);
                 if (ruleService.findByRuleId(ruleId) == null) {
-                    rule.setFileId(file);
+                    rule.setFile(file);
                     rule.setRuleId(MapPartH.get("id").get(i));
                     rule.setMessage(MapPartH.get("msg").get(i));
                     rule.setSeverity(MapPartH.get("severity").get(i));
@@ -221,7 +221,7 @@ public class HelloWorldController {
                 rule.setRuleId("");
                 rule.setMessage("");
                 rule.setSeverity("");
-                rule.setFileId(file);
+                rule.setFile(file);
                 eventRule.setRuleId(rule);
                 eventRule.setId(null);
             }

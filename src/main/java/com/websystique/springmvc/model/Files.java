@@ -44,7 +44,7 @@ public class Files implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "filePath")
     private String filePath;
-    @OneToMany(mappedBy = "fileId")
+    @OneToMany(mappedBy = "file")
     private List<Rules> rulesList;
 
     public Files() {

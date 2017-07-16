@@ -42,21 +42,17 @@ public class Rules implements Serializable {
     @Size(min = 1, max = 10)
     @Column(name = "ruleId")
     private String ruleId;
-    
     @Size(max = 255)
     @Column(name = "message")
     private String message;
-    
     @Size(max = 45)
     @Column(name = "severity")
     private String severity;
-    
     @OneToMany(mappedBy = "ruleId")
     private List<EventsRules> eventsRulesList;
-    
-    @JoinColumn(name = "fileId", referencedColumnName = "filePath")
+    @JoinColumn(name = "file", referencedColumnName = "filePath")
     @ManyToOne(optional = false)
-    private Files fileId;
+    private Files file;
 
     public Rules() {
     }
@@ -98,12 +94,12 @@ public class Rules implements Serializable {
         this.eventsRulesList = eventsRulesList;
     }
 
-    public Files getFileId() {
-        return fileId;
+    public Files getFile() {
+        return file;
     }
 
-    public void setFileId(Files fileId) {
-        this.fileId = fileId;
+    public void setFile(Files file) {
+        this.file = file;
     }
 
     @Override

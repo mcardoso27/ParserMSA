@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -37,13 +36,9 @@ public class EventsRules implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    
-    
     @JoinColumn(name = "transactionId", referencedColumnName = "transactionId")
     @ManyToOne(optional = false)
     private Events transactionId;
-    
-    
     @JoinColumn(name = "ruleId", referencedColumnName = "ruleId")
     @ManyToOne(optional = false)
     private Rules ruleId;
