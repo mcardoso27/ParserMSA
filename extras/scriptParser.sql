@@ -96,7 +96,7 @@ DROP TABLE IF EXISTS `EventsRules`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `EventsRules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `transactionId` varchar(100) NOT NULL,
+  `transactionId` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `ruleId` varchar(10) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_EventsRules_Events1_idx` (`transactionId`),
@@ -149,10 +149,10 @@ CREATE TABLE `Rules` (
   `ruleId` varchar(10) NOT NULL,
   `message` tinytext,
   `severity` varchar(45) DEFAULT NULL,
-  `fileId` varchar(255) NOT NULL,
+  `file` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`ruleId`),
-  KEY `fk_Rules_Files1_idx` (`fileId`),
-  CONSTRAINT `fk_Rules_Files1` FOREIGN KEY (`fileId`) REFERENCES `Files` (`filePath`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_Rules_Files1_idx` (`file`),
+  CONSTRAINT `fk_Rules_Files1` FOREIGN KEY (`file`) REFERENCES `Files` (`filePath`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -174,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-15 20:49:52
+-- Dump completed on 2017-07-16 12:38:35
