@@ -45,13 +45,14 @@ LOCK TABLES `EMPLOYEE` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Events`
+-- Table structure for table `Event`
 --
 
-DROP TABLE IF EXISTS `Events`;
+DROP TABLE IF EXISTS `Event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Events` (
+CREATE TABLE `Event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `PartA` longtext NOT NULL,
   `PartB` longtext,
   `PartC` longtext,
@@ -73,96 +74,102 @@ CREATE TABLE `Events` (
   `method` tinytext,
   `destinationPage` mediumtext,
   `protocol` tinytext,
-  PRIMARY KEY (`transactionId`),
+  PRIMARY KEY (`id`),
   UNIQUE KEY `transactionId_UNIQUE` (`transactionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Events`
+-- Dumping data for table `Event`
 --
 
-LOCK TABLES `Events` WRITE;
-/*!40000 ALTER TABLE `Events` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Events` ENABLE KEYS */;
+LOCK TABLES `Event` WRITE;
+/*!40000 ALTER TABLE `Event` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Event` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `EventsRules`
+-- Table structure for table `EventRule`
 --
 
-DROP TABLE IF EXISTS `EventsRules`;
+DROP TABLE IF EXISTS `EventRule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `EventsRules` (
+CREATE TABLE `EventRule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `transactionId` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ruleId` varchar(10) NOT NULL,
+  `eventId` int(11) NOT NULL,
+  `ruleId` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_EventsRules_Events1_idx` (`transactionId`),
-  KEY `fk_EventsRules_Rules1_idx` (`ruleId`),
-  CONSTRAINT `fk_EventsRules_Events1` FOREIGN KEY (`transactionId`) REFERENCES `Events` (`transactionId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_EventsRules_Rules1` FOREIGN KEY (`ruleId`) REFERENCES `Rules` (`ruleId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+  KEY `fk_EventRule_Event1_idx` (`eventId`),
+  KEY `fk_EventRule_Rule1_idx` (`ruleId`),
+  CONSTRAINT `fk_EventRule_Event1` FOREIGN KEY (`eventId`) REFERENCES `Event` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_EventRule_Rule1` FOREIGN KEY (`ruleId`) REFERENCES `Rule` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `EventsRules`
+-- Dumping data for table `EventRule`
 --
 
-LOCK TABLES `EventsRules` WRITE;
-/*!40000 ALTER TABLE `EventsRules` DISABLE KEYS */;
-/*!40000 ALTER TABLE `EventsRules` ENABLE KEYS */;
+LOCK TABLES `EventRule` WRITE;
+/*!40000 ALTER TABLE `EventRule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `EventRule` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Files`
+-- Table structure for table `File`
 --
 
-DROP TABLE IF EXISTS `Files`;
+DROP TABLE IF EXISTS `File`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Files` (
+CREATE TABLE `File` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `fileName` tinytext NOT NULL,
   `filePath` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`filePath`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `filePath_UNIQUE` (`filePath`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Files`
+-- Dumping data for table `File`
 --
 
-LOCK TABLES `Files` WRITE;
-/*!40000 ALTER TABLE `Files` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Files` ENABLE KEYS */;
+LOCK TABLES `File` WRITE;
+/*!40000 ALTER TABLE `File` DISABLE KEYS */;
+INSERT INTO `File` VALUES (1,'REQUEST-942-APPLICATION-ATTACK-SQLI.conf','/usr/share/modsecurity-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf'),(2,'REQUEST-949-BLOCKING-EVALUATION.conf','/usr/share/modsecurity-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf'),(3,'RESPONSE-980-CORRELATION.conf','/usr/share/modsecurity-crs/rules/RESPONSE-980-CORRELATION.conf');
+/*!40000 ALTER TABLE `File` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Rules`
+-- Table structure for table `Rule`
 --
 
-DROP TABLE IF EXISTS `Rules`;
+DROP TABLE IF EXISTS `Rule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Rules` (
+CREATE TABLE `Rule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ruleId` varchar(10) NOT NULL,
   `message` tinytext,
   `severity` varchar(45) DEFAULT NULL,
-  `file` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`ruleId`),
-  KEY `fk_Rules_Files1_idx` (`file`),
-  CONSTRAINT `fk_Rules_Files1` FOREIGN KEY (`file`) REFERENCES `Files` (`filePath`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `fileId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ruleId_UNIQUE` (`ruleId`),
+  KEY `fk_Rule_File1_idx` (`fileId`),
+  CONSTRAINT `fk_Rule_File1` FOREIGN KEY (`fileId`) REFERENCES `File` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Rules`
+-- Dumping data for table `Rule`
 --
 
-LOCK TABLES `Rules` WRITE;
-/*!40000 ALTER TABLE `Rules` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Rules` ENABLE KEYS */;
+LOCK TABLES `Rule` WRITE;
+/*!40000 ALTER TABLE `Rule` DISABLE KEYS */;
+INSERT INTO `Rule` VALUES (1,'942100','SQL Injection Attack Detected via libinjection','CRITICAL',0),(2,'949110','Inbound Anomaly Score Exceeded (Total Score: 10)','CRITICAL',0),(3,'980130','Inbound Anomaly Score Exceeded (Total Inbound Score: 10 - SQLI=10,XSS=0,RFI=0,LFI=0,RCE=0,PHPI=0,HTTP=0,SESS=0): SQL Injection Attack Detected via libinjection','',0);
+/*!40000 ALTER TABLE `Rule` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -174,4 +181,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-16 12:38:35
+-- Dump completed on 2017-07-16 23:03:04
