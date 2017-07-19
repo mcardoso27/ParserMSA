@@ -4,16 +4,16 @@
  */
 package com.websystique.springmvc.service;
 
-import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.Event;
 import com.websystique.springmvc.model.EventsRules;
 import com.websystique.springmvc.model.Files;
 import com.websystique.springmvc.model.Rules;
 
 public interface AuditLogService {
     
-    void saveAuditLog (Events event, EventsRules eventRule, Rules rule, Files file);
+    void saveAuditLog (Event event, EventsRules eventRule, Rules rule, Files file);
     
-    public void saveEvent(Events event);
+    public void saveEvent(Event event);
     
     boolean isRuleRegistred(String idRule);
     

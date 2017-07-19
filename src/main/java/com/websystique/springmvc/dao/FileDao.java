@@ -1,12 +1,12 @@
 
 package com.websystique.springmvc.dao;
 
-import com.websystique.springmvc.model.Files;
+import com.websystique.springmvc.model.File;
 
 public interface FileDao {
     
-    void saveFile(Files file);
+    void saveFile(File file);
     
-    public Files findByPath(String path);
+    public File findByPath(String path);
     
 }

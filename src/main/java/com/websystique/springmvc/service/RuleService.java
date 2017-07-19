@@ -1,11 +1,11 @@
 package com.websystique.springmvc.service;
  
-import com.websystique.springmvc.model.Rules;
+import com.websystique.springmvc.model.Rule;
  
 public interface RuleService {
      
-    void saveRule(Rules rule);
+    void saveRule(Rule rule);
     
-    Rules findByRuleId(String ruleId);
+    Rule findByRuleId(String ruleId);
      
 }

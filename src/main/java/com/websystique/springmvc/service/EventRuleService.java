@@ -1,9 +1,9 @@
 package com.websystique.springmvc.service;
  
-import com.websystique.springmvc.model.EventsRules;
+import com.websystique.springmvc.model.EventRule;
  
 public interface EventRuleService {
      
-    void saveEventRule(EventsRules eventRule);
+    void saveEventRule(EventRule eventRule);
      
 }

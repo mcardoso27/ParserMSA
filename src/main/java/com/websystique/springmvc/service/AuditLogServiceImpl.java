@@ -2,7 +2,7 @@
 package com.websystique.springmvc.service;
 
 import com.websystique.springmvc.dao.EventDao;
-import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.Event;
 import com.websystique.springmvc.model.EventsRules;
 import com.websystique.springmvc.model.Files;
 import com.websystique.springmvc.model.Rules;
@@ -26,11 +26,11 @@ public class AuditLogServiceImpl implements AuditLogService {
 //    @Autowired
 //    private FileDao fileDao; 
     
-    public void saveEvent(Events event) {
+    public void saveEvent(Event event) {
         eventDao.saveEvent(event);
     }
      
-    public void saveAuditLog (Events event, EventsRules eventRule, Rules rule, Files file){
+    public void saveAuditLog (Event event, EventsRules eventRule, Rules rule, Files file){
         
     }
     

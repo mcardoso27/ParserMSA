@@ -2,9 +2,13 @@ package com.websystique.springmvc.controller;
 
 import com.websystique.springmvc.model.Employee;
 import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.Event;
 import com.websystique.springmvc.model.EventsRules;
 import com.websystique.springmvc.model.Files;
 import com.websystique.springmvc.model.Rules;
+import com.websystique.springmvc.model.EventRule;
+import com.websystique.springmvc.model.File;
+import com.websystique.springmvc.model.Rule;
 import com.websystique.springmvc.service.AuditLogService;
 import com.websystique.springmvc.service.EventService;
 import com.websystique.springmvc.service.EmployeeService;
@@ -77,10 +81,10 @@ public class HelloWorldController {
     @RequestMapping(value = "/put", method = RequestMethod.PUT)
     public String sayHelloAgainPut(HttpServletRequest request,
             ModelMap model,
-            Events event,
-            EventsRules eventRule,
-            Rules rule,
-            Files file) {
+            Event event,
+            EventRule eventRule,
+            Rule rule,
+            File file) {
 
         System.out.println("ENTRO AL PUUUUUUUUUUUUUUT: " + new Date().toString());
 
@@ -169,7 +173,7 @@ public class HelloWorldController {
             event.setMethod(MapPartB.get("destinationPage"));
             event.setMethod(MapPartB.get("protocol"));
 
-            System.out.println("ANTES DE GUARDAR EL EVENTO");
+            System.out.println("ANTES DE GUARDAR EL EVENTO ID: " + event.getId());
             try {
                 eventService.saveEvent(event);
             } catch (ConstraintViolationException ese) {
@@ -177,40 +181,36 @@ public class HelloWorldController {
             } catch (JDBCConnectionException ese) {
                 System.out.println("ERROR CONNECTION: " + ese.getMessage());
             }
-
+            System.out.println("DESPUES DE GUARDAR EL EVENTO ID: " + event.getId());
             int cant = MapPartH.get("filePath").size();//cant de reglas act. filePath esta siempre presente.
+            
             for (int i = 0; i < cant; i++) {
-
                 System.out.println("Vuelta Nrooooooooooooooooooooooooooooooooooooooooooooooooooo: " + i);
 
                 String filePath = MapPartH.get("filePath").get(i);
-                if (fileService.findByFilePath(filePath) == null) {
+                File fileExists = fileService.findByFilePath(filePath);
+                if ( fileExists == null ) {
                     file.setFilePath(MapPartH.get("filePath").get(i));
                     file.setFileName(MapPartH.get("fileName").get(i));
                     fileService.saveFile(file);
                 }else{
-                    file.setFilePath(filePath);
+                    file = fileExists;
                 }
-                    
-
+                
                 String ruleId = MapPartH.get("id").get(i);
-                if (ruleService.findByRuleId(ruleId) == null) {
-                    rule.setFile(file);
+                Rule ruleExists = ruleService.findByRuleId(ruleId);
+                if (ruleExists == null) {
+                    rule.setFileId(file);
                     rule.setRuleId(MapPartH.get("id").get(i));
                     rule.setMessage(MapPartH.get("msg").get(i));
                     rule.setSeverity(MapPartH.get("severity").get(i));
                     ruleService.saveRule(rule);
                 }else{
-                    rule.setRuleId(ruleId);
+                    rule = ruleExists;
                 }
-                
-//                event = eventService.findByTransactionId(event.getTransactionId());
-//                rule = ruleService.findByRuleId(rule.getRuleId());
                 
                 eventRule.setTransactionId(event);
                 eventRule.setRuleId(rule);
-                System.out.println("EVENT Q VOY A GUARDAR: " + eventRule.getTransactionId());
-                System.out.println("RULE Q VOY A GUARDAR: " + eventRule.getRuleId());
                 eventRuleService.saveEventRule(eventRule);
 
                 System.out.println("LISTO GUARDO BIEN");
@@ -221,7 +221,7 @@ public class HelloWorldController {
                 rule.setRuleId("");
                 rule.setMessage("");
                 rule.setSeverity("");
-                rule.setFile(file);
+                rule.setFileId(file);
                 eventRule.setRuleId(rule);
                 eventRule.setId(null);
             }

@@ -8,6 +8,10 @@
     <class>com.websystique.springmvc.model.Rules</class>
     <class>com.websystique.springmvc.model.Events</class>
     <class>com.websystique.springmvc.model.Employee</class>
+    <class>com.websystique.springmvc.model.EventRule</class>
+    <class>com.websystique.springmvc.model.Event</class>
+    <class>com.websystique.springmvc.model.Rule</class>
+    <class>com.websystique.springmvc.model.File</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>

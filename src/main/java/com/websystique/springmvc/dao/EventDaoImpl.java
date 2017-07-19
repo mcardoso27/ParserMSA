@@ -7,20 +7,21 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
  
-import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.Event;
+import java.io.Serializable;
  
 @Repository("EventDao")
-public class EventDaoImpl extends AbstractDao<Integer, Events> implements EventDao {
+public class EventDaoImpl extends AbstractDao<Integer, Event> implements EventDao {
  
-    public void saveEvent(Events event) {
+    public void saveEvent(Event event) {
         persist(event);
     }
     
     @Override
-    public Events findByTransactionId(String transactionId){
+    public Event findByTransactionId(String transactionId){
         Criteria crit = createEntityCriteria();
         crit.add(Restrictions.eq("transactionId", transactionId));
-        Events event = (Events) crit.uniqueResult();
+        Event event = (Event) crit.uniqueResult();
         return event;
     }
  

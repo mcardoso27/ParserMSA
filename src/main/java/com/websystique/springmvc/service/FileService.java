@@ -1,11 +1,11 @@
 package com.websystique.springmvc.service;
  
-import com.websystique.springmvc.model.Files;
+import com.websystique.springmvc.model.File;
  
 public interface FileService {
      
-    void saveFile(Files file);
+    void saveFile(File file);
     
-    Files findByFilePath(String fp);
+    File findByFilePath(String fp);
      
 }

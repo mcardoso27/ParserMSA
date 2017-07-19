@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
  
 import com.websystique.springmvc.dao.EventRuleDao;
-import com.websystique.springmvc.model.EventsRules;
+import com.websystique.springmvc.model.EventRule;
  
 @Service("eventRuleService")
 @Transactional
@@ -15,7 +15,7 @@ public class EventRuleServiceImpl implements EventRuleService {
     private EventRuleDao dao;
  
     @Override
-    public void saveEventRule(EventsRules eventRule) {
+    public void saveEventRule(EventRule eventRule) {
         dao.saveEventRule(eventRule);
     }
      

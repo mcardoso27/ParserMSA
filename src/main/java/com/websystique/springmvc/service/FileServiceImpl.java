@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.FileDao;
-import com.websystique.springmvc.model.Files;
+import com.websystique.springmvc.model.File;
 
 @Service("fileService")
 @Transactional
@@ -15,13 +15,13 @@ public class FileServiceImpl implements FileService {
     private FileDao dao;
 
     @Override
-    public void saveFile(Files file) {
+    public void saveFile(File file) {
         dao.saveFile(file);
     }
 
     @Override
-    public Files findByFilePath(String fp) {
-        Files file = dao.findByPath(fp);
+    public File findByFilePath(String fp) {
+        File file = dao.findByPath(fp);
         return file;
     }
 

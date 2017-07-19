@@ -1,12 +1,12 @@
 
 package com.websystique.springmvc.dao;
 
-import com.websystique.springmvc.model.Rules;
+import com.websystique.springmvc.model.Rule;
 
 public interface RuleDao {
     
-    void saveRule(Rules rule);
+    void saveRule(Rule rule);
     
-    public Rules findByRuleId(String ruleId);
+    public Rule findByRuleId(String ruleId);
     
 }

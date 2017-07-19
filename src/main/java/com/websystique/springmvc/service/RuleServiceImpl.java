@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.websystique.springmvc.dao.RuleDao;
-import com.websystique.springmvc.model.Rules;
+import com.websystique.springmvc.model.Rule;
 
 @Service("ruleService")
 @Transactional
@@ -15,13 +15,13 @@ public class RuleServiceImpl implements RuleService {
     private RuleDao dao;
 
     @Override
-    public void saveRule(Rules rule) {
+    public void saveRule(Rule rule) {
         dao.saveRule(rule);
     }
 
     @Override
-    public Rules findByRuleId(String ruleId) {
-        Rules rule = dao.findByRuleId(ruleId);
+    public Rule findByRuleId(String ruleId) {
+        Rule rule = dao.findByRuleId(ruleId);
         return rule;
     }
 

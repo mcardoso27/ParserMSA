@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
  
 import com.websystique.springmvc.dao.EventDao;
-import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.Event;
  
 @Service("eventService")
 @Transactional
@@ -15,13 +15,13 @@ public class EventServiceImpl implements EventService {
     private EventDao dao;
  
     @Override
-    public void saveEvent(Events event) {
+    public void saveEvent(Event event) {
         dao.saveEvent(event);
     }
     
     @Override
-    public Events findByTransactionId(String transactionId) {
-        Events event = dao.findByTransactionId(transactionId);
+    public Event findByTransactionId(String transactionId) {
+        Event event = dao.findByTransactionId(transactionId);
         return event;
     }
      

@@ -1,11 +1,11 @@
 package com.websystique.springmvc.service;
  
-import com.websystique.springmvc.model.Events;
+import com.websystique.springmvc.model.Event;
  
 public interface EventService {
      
-    void saveEvent(Events event);
+    void saveEvent(Event event);
     
-    Events findByTransactionId(String transactionId);
+    Event findByTransactionId(String transactionId);
      
 }
