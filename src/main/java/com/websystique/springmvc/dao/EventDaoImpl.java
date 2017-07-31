@@ -24,5 +24,16 @@ public class EventDaoImpl extends AbstractDao<Integer, Event> implements EventDa
         Event event = (Event) crit.uniqueResult();
         return event;
     }
+
+    @Override
+    public List<Event> findAllEvent(int pageNumber) {
+        int pageSize = 3;
+        
+        Criteria criteria = createEntityCriteria();
+        criteria.setFirstResult((pageNumber - 1) * pageSize);
+        criteria.setMaxResults(pageSize);
+                
+        return (List<Event>) criteria.list();        
+    }
  
 }

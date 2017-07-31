@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
  
 import com.websystique.springmvc.dao.EventDao;
 import com.websystique.springmvc.model.Event;
+import java.util.List;
  
 @Service("eventService")
 @Transactional
@@ -23,6 +24,11 @@ public class EventServiceImpl implements EventService {
     public Event findByTransactionId(String transactionId) {
         Event event = dao.findByTransactionId(transactionId);
         return event;
+    }
+
+    @Override
+    public List<Event> findAllEvents(int pageNumber) {
+        return dao.findAllEvent(pageNumber);
     }
      
 }
