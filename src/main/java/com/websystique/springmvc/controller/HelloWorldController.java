@@ -1,5 +1,6 @@
 package com.websystique.springmvc.controller;
 
+import com.mysql.jdbc.Connection;
 import com.websystique.springmvc.model.Employee;
 import com.websystique.springmvc.model.Events;
 import com.websystique.springmvc.model.Event;
@@ -17,7 +18,8 @@ import com.websystique.springmvc.service.FileService;
 import com.websystique.springmvc.service.RuleService;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +28,17 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import org.hibernate.JDBCException;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +51,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+
 @Controller
 @RequestMapping("/")
 public class HelloWorldController {
+    
+    //CAMBIAR EN LA DB DATEEVENT!!!!! ES UN VARCHAR Y DEBERIA SER DATEEEEEEEEEEEEEEEEE
+    
+    @RequestMapping(value = "/jasperPDF", method = RequestMethod.GET)
+    public String sayHelloJasperPDF(ModelMap model) throws ClassNotFoundException, InstantiationException, SQLException, JRException, IllegalAccessException {
+        System.out.println("ENTRO AL GET HELLOAGAIN");
+        return "jasperPDF";
+    }
+    
+    @RequestMapping(value = "/jasperXLS", method = RequestMethod.GET)
+    public String sayHelloJasperXLS(ModelMap model) throws ClassNotFoundException, InstantiationException, SQLException, JRException, IllegalAccessException {
+        System.out.println("ENTRO AL GET HELLOAGAIN");
+        return "jasperXLS";
+    }
+    
+    @RequestMapping(value = "/jasperHTML", method = RequestMethod.GET)
+    public String sayHelloJasperHTML(ModelMap model) throws ClassNotFoundException, InstantiationException, SQLException, JRException, IllegalAccessException {
+        System.out.println("ENTRO AL GET HELLOAGAIN");
+        return "jasperHTML";
+    }
 
     //El value es el RequestMapping de la clase ("/")
     @RequestMapping(method = RequestMethod.GET)

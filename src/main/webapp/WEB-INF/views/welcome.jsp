@@ -8,5 +8,7 @@
 </head>
 <body>
 	Greeting : ${greeting}
+        <br/>
+        Fichero: ${fichero}
 </body>
 </html>
