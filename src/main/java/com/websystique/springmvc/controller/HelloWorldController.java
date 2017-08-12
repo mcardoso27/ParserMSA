@@ -43,6 +43,10 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -58,9 +62,51 @@ public class HelloWorldController {
     
     //CAMBIAR EN LA DB DATEEVENT!!!!! ES UN VARCHAR Y DEBERIA SER DATEEEEEEEEEEEEEEEEE
     
+    @RequestMapping(value = "/jasper", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> sayHelloJasper(ModelMap model) throws ClassNotFoundException, InstantiationException, SQLException, JRException, IllegalAccessException {
+        System.out.println("ENTRO AL GET HELLOAGAIN");        
+    
+        Connection conexion;
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/Empleados", "root", "mcardoso27");
+
+        Map parameters = new HashMap();
+        //A nuestro informe de prueba le vamos a enviar la fecha de hoy
+        parameters.put("fechainicio", new Date());
+        
+        JasperReport jasperReport;
+        jasperReport= (JasperReport) JRLoader.loadObject("/home/martin/NetBeansProjects/ParserMSA/src/main/jasperreports/graficos.jasper");
+        
+        byte[] fichero = JasperRunManager.runReportToPdf("/home/martin/NetBeansProjects/ParserMSA/src/main/jasperreports/graficos.jasper", parameters, conexion);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        String filename = "output.pdf";
+        headers.setContentDispositionFormData(filename, filename);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(fichero, headers, HttpStatus.OK);
+        return response;
+        
+//        response.setContentType("application/pdf");
+//        response.setHeader("Content-disposition", "inline; filename=informeDemo.pdf");
+//        response.setHeader("Cache-Control", "max-age=30");
+//        response.setHeader("Pragma", "No-cache");
+//        response.setDateHeader("Expires", 0);
+//        response.setContentLength(fichero.length);
+//        
+//        ServletOutputStream outter;
+//        
+//        outter = response.getOutputStream();
+//        outter.write(fichero, 0, fichero.length);
+//        outter.flush();
+//        outter.close();
+            
+//        return "jasperPDF";
+    }    
+    
     @RequestMapping(value = "/jasperPDF", method = RequestMethod.GET)
     public String sayHelloJasperPDF(ModelMap model) throws ClassNotFoundException, InstantiationException, SQLException, JRException, IllegalAccessException {
-        System.out.println("ENTRO AL GET HELLOAGAIN");
+        System.out.println("ENTRO AL GET HELLOAGAIN");        
         return "jasperPDF";
     }
     
